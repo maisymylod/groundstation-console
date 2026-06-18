@@ -1,0 +1,32 @@
+name: bazel
+
+# CI-verified Bazel build of the Go backend. Bazel is not part of the local dev
+# environment (the local path is `go build/test`); this job is the authority for
+# the BUILD.bazel / MODULE.bazel configuration.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  bazel:
+    name: bazel build + test (bazelisk)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install bazelisk
+        run: |
+          curl -fsSL -o /usr/local/bin/bazel \
+            https://github.com/bazelbuild/bazelisk/releases/download/v1.22.0/bazelisk-linux-amd64
+          chmod +x /usr/local/bin/bazel
+          bazel version
+      - name: sync BUILD files from go.mod
+        run: bazel run //:gazelle
+      - name: build
+        run: bazel build //...
+      - name: test
+        run: bazel test //... --test_output=errors

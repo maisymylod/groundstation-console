@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "store",
+    srcs = [
+        "naive.go",
+        "store.go",
+    ],
+    importpath = "github.com/maisymylod/groundstation-console/internal/store",
+    visibility = ["//:__subpackages__"],
+    deps = ["//internal/telemetry"],
+)
+
+go_test(
+    name = "store_test",
+    srcs = ["store_test.go"],
+    embed = [":store"],
+    deps = ["//internal/telemetry"],
+)
