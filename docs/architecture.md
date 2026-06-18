@@ -36,21 +36,21 @@ on the live consumer; both paths feed the same `store.Store`.
 ## Components
 
 ### Backend (Go)
-- `internal/telemetry` — the domain model (`Frame`, `Incident`, `Severity`), the
+- `internal/telemetry`: the domain model (`Frame`, `Incident`, `Severity`), the
   rule-based `Detect` classifier over the shared anomaly taxonomy, and the seeded
   fixture generator. The taxonomy (nominal / drift / dropout / thermal_runaway)
   matches the rest of the suite.
-- `internal/store` — concurrency-safe in-memory state. Maintains per-satellite
+- `internal/store`: concurrency-safe in-memory state. Maintains per-satellite
   summary indexes on ingest so the hot read paths do not rescan the frame log.
   Ships both the optimized `FleetSummary` and the pre-optimization
   `NaiveFleetSummary` kept for the benchmark.
-- `internal/api` — `net/http` server (Go 1.22+ method-and-path routing), JSON
+- `internal/api`: `net/http` server (Go 1.22+ method-and-path routing), JSON
   responses, request logging via `log/slog`, CORS for the SPA dev server.
-- `internal/broker` — `franz-go` consumer that decodes telemetry frames off
+- `internal/broker`: `franz-go` consumer that decodes telemetry frames off
   Kafka/Redpanda and ingests them, plus a producer that streams the fixture for
   the compose demo.
-- `internal/config` — environment-driven config with runnable defaults.
-- `cmd/console` — wires it together; `console` serves, `console produce` streams.
+- `internal/config`: environment-driven config with runnable defaults.
+- `cmd/console`: wires it together; `console` serves, `console produce` streams.
 
 ### Frontend (Angular)
 - Standalone components only, no NgModules. `AppComponent` renders the fleet grid,
