@@ -1,0 +1,16 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "broker",
+    srcs = [
+        "consumer.go",
+        "producer.go",
+    ],
+    importpath = "github.com/maisymylod/groundstation-console/internal/broker",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//internal/store",
+        "//internal/telemetry",
+        "@com_github_twmb_franz_go//pkg/kgo",
+    ],
+)

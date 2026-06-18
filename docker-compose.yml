@@ -1,0 +1,56 @@
+# Local stack: a Redpanda broker (Kafka API compatible), the console backend
+# consuming live telemetry, and a one-shot producer that streams the bundled
+# fixture into the broker so the console shows frames arriving in real time.
+#
+#   docker compose up --build
+#   open http://localhost:8080/api/fleet
+#
+# The Angular SPA is served separately with `make web-serve` (dev server proxies
+# /api to this backend).
+
+services:
+  redpanda:
+    image: redpandadata/redpanda:v24.2.7
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --node-id=0
+      - --check=false
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr=PLAINTEXT://redpanda:9092
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  console:
+    build: .
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    environment:
+      CONSOLE_ADDR: ":8080"
+      BROKER_SEEDS: "redpanda:9092"
+      TELEMETRY_TOPIC: "heliosnet.telemetry"
+      CONSUMER_GROUP: "groundstation-console"
+    ports:
+      - "8080:8080"
+
+  producer:
+    build: .
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    command: ["produce"]
+    environment:
+      BROKER_SEEDS: "redpanda:9092"
+      TELEMETRY_TOPIC: "heliosnet.telemetry"
+      FIXTURE_SIZE: "240"
+    restart: on-failure
