@@ -1,0 +1,21 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/maisymylod/groundstation-console/internal/store
+cpu: Apple M2 Pro
+                       │ bench/fleet_summary.txt │
+                       │         sec/op          │
+FleetSummaryNaive-10                 594.5µ ± 9%
+FleetSummaryIndexed-10               344.9n ± 6%
+geomean                              14.32µ
+
+                       │ bench/fleet_summary.txt │
+                       │          B/op           │
+FleetSummaryNaive-10                196.8Ki ± 0%
+FleetSummaryIndexed-10                520.0 ± 0%
+geomean                             9.998Ki
+
+                       │ bench/fleet_summary.txt │
+                       │        allocs/op        │
+FleetSummaryNaive-10                 8.510k ± 0%
+FleetSummaryIndexed-10                4.000 ± 0%
+geomean                               184.5
