@@ -18,10 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: set up Go (host toolchain for rules_go)
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.26.4"
       - name: install bazelisk
         uses: bazelbuild/setup-bazelisk@v3
       - name: bazel version

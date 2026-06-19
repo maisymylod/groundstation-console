@@ -1,6 +1,6 @@
 module github.com/maisymylod/groundstation-console
 
-go 1.26
+go 1.23
 
 require github.com/twmb/franz-go v1.18.0
 
