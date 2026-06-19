@@ -13,7 +13,10 @@ bazel_dep(name = "rules_go", version = "0.50.1")
 bazel_dep(name = "gazelle", version = "0.39.1")
 
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
-go_sdk.download(version = "1.26.4")
+# Use the Go toolchain present on the machine (provisioned by setup-go in CI).
+# rules_go 0.50.1 predates Go 1.26 and has no download hash for it, so a pinned
+# download would fail; the host toolchain keeps the SDK in lockstep with go.mod.
+go_sdk.host()
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//:go.mod")

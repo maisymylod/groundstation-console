@@ -18,10 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: set up Go (host toolchain for rules_go)
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.4"
       - name: install bazelisk
         uses: bazelbuild/setup-bazelisk@v3
       - name: bazel version
-        run: bazel version
+        run: bazel version   # pinned by .bazelversion (7.4.1, compatible with rules_go 0.50.1)
       - name: sync BUILD files from go.mod
         run: bazel run //:gazelle
       - name: build
